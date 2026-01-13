@@ -1,4 +1,4 @@
-import { saveAppointment, listAppointments } from '../Models/appointmentModel';
+import { saveAppointment, listAppointments, findAppointmentById, deleteAppointmentById } from '../Models/appointmentModel';
 
 function appointmentService({ name, date, time }) {
 
@@ -18,8 +18,32 @@ function appointmentService({ name, date, time }) {
   return appointment;
 }
 
+
 function listAppointmentsService() {
   return listAppointments();
 }
 
-export { appointmentService, listAppointmentsService };
+
+function getAppointmentByIdService(id) {
+  const appointment = findAppointmentById(id);
+
+  if (!appointment) {
+    throw new Error("Agendamento não encontrado");
+  }
+
+  return appointment;
+}
+
+
+function deleteAppointmentService(id) {
+  const deleted = deleteAppointmentById(id);
+
+  if (!deleted) {
+    throw new Error("Agendamento não encontrado");
+  }
+
+  return deleted;
+}
+
+
+export { appointmentService, listAppointmentsService, getAppointmentByIdService, deleteAppointmentService };
