@@ -1,9 +1,9 @@
-import { appointmentService, listAppointmentsService, getAppointmentByIdService, deleteAppointmentService } from '../Services/appointmentService'
+import { appointmentService, listAppointmentsService, getAppointmentByIdService, deleteAppointmentService, getAvailableTimesService } from '../Services/appointmentService.js'
 
 function createAppointmentController(req, res) {
     try {
-        const { name, date, time } = req.body;
-        const callService = appointmentService({ name, date, time });
+        const { name, date, time, serviceType } = req.body;
+        const callService = appointmentService({ name, date, time, serviceType });
 
         return res.status(201).json(callService);
     }
@@ -23,11 +23,26 @@ function listAppointmentsController(req, res) {
     }
     catch(error) {
         console.log("Erro ao listar seu agendamento.")
-        return res.status(500).json({
+        return res.status(404).json({
             error: error.message
         })
     }
 }
+
+function getAvailableTimesController(req, res) {
+  try {
+    const { date, serviceType } = req.query;
+
+    const times = getAvailableTimesService(date, serviceType);
+    return res.status(200).json(times);
+
+  } catch (error) {
+    return res.status(400).json({
+      error: error.message
+    });
+  }
+}
+
 
 function getAppointmentByIdController(req, res) {
     try {
@@ -38,7 +53,7 @@ function getAppointmentByIdController(req, res) {
     }
     catch(error) {
         console.log("Erro ao buscar seu agendamento.")
-        return res.status(500).json({
+        return res.status(404).json({
             error: error.message
         })
     }
@@ -49,7 +64,7 @@ function deleteAppointmentByIdController(req, res) {
         const { id } = req.params
         const delById = deleteAppointmentService(id)
 
-        return res.status(200).json(delById);
+        return res.status(204).send();
 
     }
     catch (error) {
@@ -61,4 +76,4 @@ function deleteAppointmentByIdController(req, res) {
 }
 
 
-export { createAppointmentController, listAppointmentsController, getAppointmentByIdController, deleteAppointmentByIdController };
+export { createAppointmentController, listAppointmentsController, getAvailableTimesController, getAppointmentByIdController, deleteAppointmentByIdController };
